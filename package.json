@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node server.js",
+    "nodemon": "node_modules/.bin/nodemon.cmd server.js"
+  },
   "dependencies": {
     "axios": "0.21.1",
     "body-parser": "1.19.0",
