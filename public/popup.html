@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Popup</title>
+</head>
+<body>
+<h1>This is a popup window</h1>
+<form action="/post" method="post" id="theForm"></form>
+<pre id="data"></pre>
+</body>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = [...(new URLSearchParams(window.location.hash.replace(/^#/, ''))).entries()];
+
+        const form = document.getElementById('theForm');
+
+        data.forEach(entry => {
+            const input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = entry[0];
+            input.value = entry[1];
+
+            form.appendChild(input);
+        })
+
+        document.getElementById('data').innerText = JSON.stringify(Object.fromEntries(data), null, 4);
+
+        console.log(data);
+
+        setTimeout(() => form.submit(), 1000);
+    });
+</script>
+</html>

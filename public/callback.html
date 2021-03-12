@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Popup</title>
+</head>
+<body>
+<h1>This is a callback page</h1>
+</body>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const data = Object.fromEntries(new URLSearchParams(window.location.hash.replace(/^#/, '')).entries());
+
+        console.log(data);
+
+        window.opener.handlePopup(data);
+
+        window.close();
+    });
+</script>
+</html>

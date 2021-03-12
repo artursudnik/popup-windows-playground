@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+<button href="#" id="popupButton">open popup</button>
+</body>
+<script type="text/javascript">
+    const popupProperties = {
+        height: 500,
+        width : 500,
+        left  : 400,
+        top   : 400
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('popupButton').addEventListener('click', () => {
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                someData : "some data"
+            }
+
+            popup(data)
+                .then(() => console.log('popup handled successfully'))
+                .catch((err) => console.error(`popup error: ${err}`))
+
+        })
+    });
+
+    async function popup(data) {
+        const left = (window.screen.width / 2) - ((popupProperties.width / 2) + 10),
+              top  = (window.screen.height / 2) - ((popupProperties.height / 2) + 50);
+
+        const newProperties = {
+            ...popupProperties,
+            left,
+            top
+        };
+
+        return new Promise((resolve, reject) => {
+            const ref = window.open(
+                `/popup.html#${new URLSearchParams(data)}`,
+                '_blank',
+                Object.entries(newProperties).map(e => e.join('=')).join(',')
+            );
+
+            // a hack to detect popup window closed before flow is complete
+            const timer = setInterval(() => {
+                if (ref.closed) {
+                    clearInterval(timer);
+                    window.handlePopup = null;
+
+                    const error = new Error('window closed');
+                    error.code  = 'closed';
+
+                    reject(error);
+                }
+            }, 50);
+
+            window.handlePopup = function (data) {
+                clearInterval(timer);
+                window.handlePopup = null;
+
+                console.log(`got data from popup`);
+                console.log(data);
+
+                resolve();
+            }
+        })
+    }
+</script>
+</html>
